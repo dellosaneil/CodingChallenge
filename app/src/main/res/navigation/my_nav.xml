@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/homePage">
+
+    <fragment
+        android:id="@+id/homePage"
+        android:name="com.example.codingchallenge.fragments.homePage.HomePage"
+        android:label="fragment_home_page"
+        tools:layout="@layout/fragment_home_page" >
+        <action
+            android:id="@+id/action_homePage_to_detailsPage"
+            app:destination="@id/detailsPage" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsPage"
+        android:name="com.example.codingchallenge.fragments.DetailsPage"
+        android:label="fragment_details_page"
+        tools:layout="@layout/fragment_details_page" />
+</navigation>

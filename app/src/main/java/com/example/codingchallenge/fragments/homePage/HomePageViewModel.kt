@@ -1,4 +1,4 @@
-package com.example.codingchallenge
+package com.example.codingchallenge.fragments.homePage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(
+class HomePageViewModel @Inject constructor(
     private val appleRepository: AppleRepository,
     private val appleApi: AppleApi
 ) : ViewModel() {

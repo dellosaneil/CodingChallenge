@@ -1,7 +1,9 @@
 package com.example.codingchallenge
 
 import android.os.Bundle
+import android.text.BoringLayout.make
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
@@ -14,42 +16,17 @@ import com.example.codingchallenge.Constants.Companion.CHECK_UPDATED_KEY
 import com.example.codingchallenge.Constants.Companion.DATA_STORE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val mainActivityViewModel : MainActivityViewModel by viewModels()
-    private lateinit var dataStore : DataStore<Preferences>
-    private val TAG = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initializeDataStore()
-        checkDataForUpdate()
-        mainActivityViewModel.dataList.observe(this){
-            Log.i(TAG, "onCreate: ${it[0].trackName}")
-        }
-
     }
-
-    private fun checkDataForUpdate() {
-        val dataStoreKey = booleanPreferencesKey(CHECK_UPDATED_KEY)
-        lifecycleScope.launch(IO) {
-            val preference = dataStore.data.first()
-            if(preference[dataStoreKey] == null || preference[dataStoreKey] == false){
-                mainActivityViewModel.retrieveAllAppleData()
-                dataStore.edit {
-                    it[dataStoreKey] = true
-                }
-            }
-        }
-    }
-
-    private fun initializeDataStore() {
-        dataStore = this.createDataStore(DATA_STORE)
-    }
-
 
 }
