@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.codingchallenge.Constants.Companion.CHECK_UPDATED_KEY
@@ -27,14 +28,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initializeDataStore()
         checkDataForUpdate()
+        mainActivityViewModel.dataList.observe(this){
+            Log.i(TAG, "onCreate: ${it[0].trackName}")
+        }
+
     }
 
     private fun checkDataForUpdate() {
         val dataStoreKey = booleanPreferencesKey(CHECK_UPDATED_KEY)
         lifecycleScope.launch(IO) {
             val preference = dataStore.data.first()
-            if(preference[dataStoreKey] == null){
-                Log.i(TAG, "checkDataForUpdate: ${preference[dataStoreKey]}")
+            if(preference[dataStoreKey] == null || preference[dataStoreKey] == false){
+                mainActivityViewModel.retrieveAllAppleData()
+                dataStore.edit {
+                    it[dataStoreKey] = true
+                }
             }
         }
     }

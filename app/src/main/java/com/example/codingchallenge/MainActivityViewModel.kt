@@ -42,7 +42,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    suspend fun retrieveAllAppleData(): Boolean {
+    suspend fun retrieveAllAppleData() {
         val appleList = appleApi.getAppleData()
         if (appleList.isSuccessful) {
             val numberOfData = appleList.body()?.resultCount
@@ -54,9 +54,6 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
         }
-        return false
-
-
     }
 
     private fun retrieveImportantData(tempData: AppleResult?): AppleEntity? {
