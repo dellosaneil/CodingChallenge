@@ -1,6 +1,6 @@
 package com.example.codingchallenge.api_data
 
-data class Result(
+data class AppleResult(
     val amgArtistId: Int,
     val artistId: Int,
     val artistName: String,
