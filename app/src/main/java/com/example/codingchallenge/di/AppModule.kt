@@ -34,7 +34,9 @@ class AppModule {
     @Singleton
     @Provides
     fun provideRoomDatabase(@ApplicationContext context : Context) : AppleDatabase =
-        Room.databaseBuilder(context, AppleDatabase::class.java, DATABASE_NAME).build()
+        Room.databaseBuilder(context, AppleDatabase::class.java, DATABASE_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton

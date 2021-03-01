@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:padding="8dp"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/homePageRV_image"
+            android:background="#00000000"
+            android:layout_width="140dp"
+            android:layout_height="160dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/homePageRV_title"
+            android:layout_width="0dp"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/homePageRV_image"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/homePageRV_image"
+            app:layout_constraintTop_toBottomOf="@+id/homePageRV_image"
+            tools:text="Roald Dahl's The Witches" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/homePageRV_ratings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:drawableEnd="@drawable/ic_baseline_star_rate_12"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/homePageRV_title"
+            app:layout_constraintTop_toBottomOf="@+id/homePageRV_title"
+            tools:text="3.7" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/homePageRV_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/homePageRV_ratings"
+            app:layout_constraintTop_toBottomOf="@+id/homePageRV_title"
+            tools:text="$19.99" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/homePageRV_genre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/homePageRV_image"
+            app:layout_constraintHorizontal_bias="0.0"
+            tools:text="Sci-Fi &amp; Fantasy"
+            app:layout_constraintStart_toStartOf="@+id/homePageRV_image"
+            app:layout_constraintTop_toBottomOf="@+id/homePageRV_price" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

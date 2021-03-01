@@ -11,7 +11,7 @@
         android:label="fragment_home_page"
         tools:layout="@layout/fragment_home_page" >
         <action
-            android:id="@+id/action_homePage_to_detailsPage"
+            android:id="@+id/homePage_detailsPage"
             app:destination="@id/detailsPage" />
     </fragment>
     <fragment

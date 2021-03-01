@@ -48,17 +48,17 @@ class HomePageViewModel @Inject constructor(
             val numberOfData = appleList.body()?.resultCount
             numberOfData?.let{ totalNumber ->
                 repeat(totalNumber){
-                    val tempData = appleList.body()?.results?.get(it)
-                    val importantData = retrieveImportantData(tempData)
+                    val appleData = appleList.body()?.results?.get(it)
+                    val importantData = retrieveImportantData(appleData)
                     insertAppleData(importantData)
                 }
             }
         }
     }
 
-    private fun retrieveImportantData(tempData: AppleResult?): AppleEntity? {
-        tempData?.let{
-            return  AppleEntity(tempData.trackName, tempData.artworkUrl60, tempData.trackPrice, tempData.primaryGenreName, tempData.longDescription)
+    private fun retrieveImportantData(appleData: AppleResult?): AppleEntity? {
+        appleData?.let{
+            return  AppleEntity(appleData.trackName, appleData.artworkUrl100, appleData.trackPrice, appleData.primaryGenreName, appleData.longDescription)
         }
         return null
     }

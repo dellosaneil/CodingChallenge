@@ -1,6 +1,7 @@
 package com.example.codingchallenge.fragments.homePage
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,20 +14,25 @@ import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.example.codingchallenge.Constants
 import com.example.codingchallenge.R
 import com.example.codingchallenge.databinding.FragmentHomePageBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class HomePage : Fragment() {
 
     private val homePageViewModel : HomePageViewModel by viewModels()
     private lateinit var dataStore : DataStore<Preferences>
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
-
+    private val homePageAdapter : HomePageAdapter by lazy { HomePageAdapter() }
+    private val TAG = "HomePage"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,9 +46,19 @@ class HomePage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initializeDataStore()
         checkDataForUpdate()
-        binding.button.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_homePage_to_detailsPage)
+        setUpRecyclerView()
+    }
+
+    private fun setUpRecyclerView() {
+        binding.homePageRecyclerView.apply{
+            adapter = homePageAdapter
+            layoutManager = GridLayoutManager(requireActivity(), 2)
         }
+        homePageViewModel.dataList.observe(viewLifecycleOwner){
+            homePageAdapter.insertMovieData(it)
+        }
+
+
     }
 
 
