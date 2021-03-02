@@ -16,7 +16,13 @@
     </fragment>
     <fragment
         android:id="@+id/detailsPage"
-        android:name="com.example.codingchallenge.fragments.DetailsPage"
+        android:name="com.example.codingchallenge.fragments.detailsPage.DetailsPage"
         android:label="fragment_details_page"
-        tools:layout="@layout/fragment_details_page" />
+        tools:layout="@layout/fragment_details_page" >
+        <argument
+            android:name="movieDetails"
+            app:argType="com.example.codingchallenge.room.AppleEntity"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 </navigation>

@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.example.codingchallenge.Constants
 import com.example.codingchallenge.R
 import com.example.codingchallenge.databinding.FragmentHomePageBinding
+import com.example.codingchallenge.room.AppleEntity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -34,6 +35,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener {
     private val binding get() = _binding!!
     private val homePageAdapter : HomePageAdapter by lazy { HomePageAdapter(this) }
     private val TAG = "HomePage"
+    private var updatedList = listOf<AppleEntity>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +61,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener {
         homePageViewModel.dataList.observe(viewLifecycleOwner){ outer ->
             outer?.let{
                 homePageAdapter.insertMovieData(it)
+                updatedList = it
             }
         }
     }
@@ -88,8 +91,8 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener {
     }
 
     override fun pageClicked(position: Int) {
-        Log.i(TAG, "pageClicked: $position")
+        val movieDetails = updatedList[position]
+        val action = HomePageDirections.homePageDetailsPage(movieDetails)
+        Navigation.findNavController(requireView()).navigate(action)
     }
-
-
 }
