@@ -27,11 +27,14 @@ import com.example.codingchallenge.room.AppleEntity
 import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.OnQueryTextListener, ChipGroup.OnCheckedChangeListener {
+class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.OnQueryTextListener,
+    ChipGroup.OnCheckedChangeListener {
 
     private val homePageViewModel: HomePageViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
@@ -45,7 +48,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
     private lateinit var filterViewKey: Preferences.Key<String>
     private var latestSearch = ""
     private var latestFilter = -1
-    private lateinit var filterArray : Array<String>
+    private lateinit var filterArray: Array<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,25 +61,35 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeDataStore()
-        checkDataForUpdate()
+        checkSavedPreferences()
         setUpRecyclerView()
-        initializeToolbar()
         initializeChipGroup()
     }
 
     private fun initializeChipGroup() {
-        filterArray = resources.getStringArray(R.array.chip_array)
         binding.homePageChipGroup.setOnCheckedChangeListener(this)
-        val chipArray = arrayOf(binding.homePageChipAction, binding.homePageChipComedy, binding.homePageChipDrama, binding.homePageChipKids, binding.homePageChipRomance, binding.homePageChipSciFi)
+        val chipArray = arrayOf(
+            binding.homePageChipAction,
+            binding.homePageChipComedy,
+            binding.homePageChipDrama,
+            binding.homePageChipKids,
+            binding.homePageChipRomance,
+            binding.homePageChipSciFi
+        )
         val labelArray = resources.getStringArray(R.array.chip_array)
-        repeat(chipArray.size){
-            chipArray[it].homePageChip.text = labelArray[it]
+        repeat(chipArray.size) {
+            chipArray[it].homePageChip.text = labelArray[it + 1]
         }
     }
 
     private fun initializeToolbar() {
         val search = binding.homePageToolbar.menu?.findItem(R.id.homeMenu_search)
         val searchView = search?.actionView as SearchView
+        searchView.apply{
+            onActionViewExpanded()
+            setQuery(latestSearch, true)
+            clearFocus()
+        }
         searchView.setOnQueryTextListener(this)
     }
 
@@ -95,7 +108,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
-    private fun checkDataForUpdate() {
+    private fun checkSavedPreferences() {
         lifecycleScope.launch(IO) {
             val preference = dataStore.data.first()
             if (preference[checkUpdatedKey] == null || preference[checkUpdatedKey] == false) {
@@ -104,16 +117,36 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                     it[checkUpdatedKey] = true
                 }
                 homePageViewModel.searchWithFilter("", "")
-            }else{
-                preference[searchViewKey]?.let{
-                    homePageViewModel.searchWithFilter(it, "")
+            } else {
+                preference[searchViewKey]?.let {
                     latestSearch = it
+                }
+                preference[filterViewKey]?.let {
+                    latestFilter = filterArray.indexOf(it)
+                }
+                homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
+                withContext(Main) {
+                    initializeToolbar()
+                    checkChipButton()
                 }
             }
         }
     }
 
+    private fun checkChipButton() {
+        when (latestFilter) {
+            1 -> binding.homePageChipAction.homePageChip.isChecked = true
+            2 -> binding.homePageChipComedy.homePageChip.isChecked = true
+            3 -> binding.homePageChipDrama.homePageChip.isChecked = true
+            4 -> binding.homePageChipKids.homePageChip.isChecked = true
+            5 -> binding.homePageChipRomance.homePageChip.isChecked = true
+            6 -> binding.homePageChipSciFi.homePageChip.isChecked = true
+        }
+    }
+
+
     private fun initializeDataStore() {
+        filterArray = resources.getStringArray(R.array.chip_array)
         dataStore = requireContext().createDataStore(Constants.DATA_STORE)
         checkUpdatedKey = booleanPreferencesKey(Constants.CHECK_UPDATED_KEY)
         searchViewKey = stringPreferencesKey(LATEST_SEARCH_VIEW)
@@ -152,26 +185,19 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
 
     override fun onCheckedChanged(group: ChipGroup?, checkedId: Int) {
         val filterArray = resources.getStringArray(R.array.chip_array)
-        latestFilter = when(checkedId){
-            R.id.homePage_chipAction -> 0
-            R.id.homePage_chipComedy -> 1
-            R.id.homePage_chipDrama -> 2
-            R.id.homePage_chipKids -> 3
-            R.id.homePage_chipRomance -> 4
-            R.id.homePage_chipSciFi -> 5
-            else -> -1
+        latestFilter = when (checkedId) {
+            R.id.homePage_chipAction -> 1
+            R.id.homePage_chipComedy -> 2
+            R.id.homePage_chipDrama -> 3
+            R.id.homePage_chipKids -> 4
+            R.id.homePage_chipRomance -> 5
+            R.id.homePage_chipSciFi -> 6
+            else -> 0
         }
-        lifecycleScope.launch(IO){
-            dataStore.edit{
-                if(latestFilter >= 0){
-                    it[filterViewKey] = filterArray[latestFilter]
-                    homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
-                }else{
-                    it[filterViewKey] = ""
-                    homePageViewModel.searchWithFilter(latestSearch, "")
-                }
-                Log.i(TAG, "onCheckedChanged: ${it[filterViewKey]}")
-
+        lifecycleScope.launch(IO) {
+            dataStore.edit {
+                it[filterViewKey] = filterArray[latestFilter]
+                homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
             }
         }
 
