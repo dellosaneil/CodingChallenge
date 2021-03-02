@@ -1,22 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragments.homePage.HomePage">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/homePage_toolbar"
         android:layout_width="match_parent"
-        app:menu="@menu/home_menu"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="?attr/actionBarSize"
+        app:menu="@menu/home_menu" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        app:singleLine="true"
+        app:singleSelection="true"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/homePage_chipAction"
+            layout="@layout/item_chip" />
+
+        <include
+            android:id="@+id/homePage_chipComedy"
+            layout="@layout/item_chip" />
+
+        <include
+            android:id="@+id/homePage_chipDrama"
+            layout="@layout/item_chip" />
+
+        <include
+            android:id="@+id/homePage_chipKids"
+            layout="@layout/item_chip" />
+
+        <include
+            android:id="@+id/homePage_chipRomance"
+            layout="@layout/item_chip" />
+
+        <include
+            android:id="@+id/homePage_chipSciFi"
+            layout="@layout/item_chip" />
+
+
+    </com.google.android.material.chip.ChipGroup>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homePage_recyclerView"
         android:layout_width="match_parent"
-        tools:listitem="@layout/list_item_homepage"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:listitem="@layout/list_item_homepage" />
 
 </LinearLayout>

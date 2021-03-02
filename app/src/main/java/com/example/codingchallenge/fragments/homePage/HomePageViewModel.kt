@@ -24,10 +24,6 @@ class HomePageViewModel @Inject constructor(
     private val _dataList = MutableLiveData<List<AppleEntity>>()
     var dataList: LiveData<List<AppleEntity>> = _dataList
 
-    init {
-        searchAppleList("")
-    }
-
     fun searchAppleList(search: String?) {
         search?.let{
             val query = "%$it%"
