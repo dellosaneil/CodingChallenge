@@ -13,7 +13,6 @@ class Constants {
         const val LATEST_FILTER_KEY = "filterGenre"
 
         const val LATEST_FIELD_KEY = "indexNumber"
-        const val IS_CLICKED_KEY = "isClicked"
 
     }
 }

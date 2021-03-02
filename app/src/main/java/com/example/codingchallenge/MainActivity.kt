@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.example.codingchallenge.Constants.Companion.CHECK_UPDATED_KEY
 import com.example.codingchallenge.Constants.Companion.DATA_STORE
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,5 +29,4 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
-
 }

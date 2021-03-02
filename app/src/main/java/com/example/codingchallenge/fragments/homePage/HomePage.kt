@@ -8,10 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.codingchallenge.Constants
+import com.example.codingchallenge.Constants.Companion.LATEST_FIELD_KEY
 import com.example.codingchallenge.Constants.Companion.LATEST_FILTER_KEY
 import com.example.codingchallenge.Constants.Companion.LATEST_SEARCH_VIEW
 import com.example.codingchallenge.R
@@ -41,11 +39,11 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
     private val homePageAdapter: HomePageAdapter by lazy { HomePageAdapter(this) }
-    private val TAG = "HomePage"
     private var updatedList = listOf<AppleEntity>()
     private lateinit var checkUpdatedKey: Preferences.Key<Boolean>
     private lateinit var searchViewKey: Preferences.Key<String>
     private lateinit var filterViewKey: Preferences.Key<String>
+    private lateinit var latestMovieKey: Preferences.Key<Int>
     private var latestSearch = ""
     private var latestFilter = -1
     private lateinit var filterArray: Array<String>
@@ -66,6 +64,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         initializeChipGroup()
     }
 
+
     private fun initializeChipGroup() {
         binding.homePageChipGroup.setOnCheckedChangeListener(this)
         val chipArray = arrayOf(
@@ -85,10 +84,8 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
     private fun initializeToolbar() {
         val search = binding.homePageToolbar.menu?.findItem(R.id.homeMenu_search)
         val searchView = search?.actionView as SearchView
-        searchView.apply{
-            onActionViewExpanded()
+        searchView.apply {
             setQuery(latestSearch, true)
-            clearFocus()
         }
         searchView.setOnQueryTextListener(this)
     }
@@ -115,6 +112,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                 homePageViewModel.retrieveAllAppleData()
                 dataStore.edit {
                     it[checkUpdatedKey] = true
+                    it[latestMovieKey] = -1
                 }
                 homePageViewModel.searchWithFilter("", "")
             } else {
@@ -125,6 +123,19 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                     latestFilter = filterArray.indexOf(it)
                 }
                 homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
+                redirectToPreviousMovie(preference[latestMovieKey]!!)
+            }
+        }
+    }
+
+
+    private suspend fun redirectToPreviousMovie(indexNumber: Int) {
+        withContext(Main) {
+            if (indexNumber != -1) {
+                val movieDetails = updatedList[indexNumber]
+                val action = HomePageDirections.homePageDetailsPage(movieDetails)
+                Navigation.findNavController(requireView()).navigate(action)
+            }else{
                 withContext(Main) {
                     initializeToolbar()
                     checkChipButton()
@@ -132,6 +143,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
             }
         }
     }
+
 
     private fun checkChipButton() {
         when (latestFilter) {
@@ -151,6 +163,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         checkUpdatedKey = booleanPreferencesKey(Constants.CHECK_UPDATED_KEY)
         searchViewKey = stringPreferencesKey(LATEST_SEARCH_VIEW)
         filterViewKey = stringPreferencesKey(LATEST_FILTER_KEY)
+        latestMovieKey = intPreferencesKey(LATEST_FIELD_KEY)
     }
 
 
@@ -163,6 +176,11 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         val movieDetails = updatedList[position]
         val action = HomePageDirections.homePageDetailsPage(movieDetails)
         Navigation.findNavController(requireView()).navigate(action)
+        lifecycleScope.launch(IO) {
+            dataStore.edit {
+                it[latestMovieKey] = position
+            }
+        }
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -200,7 +218,6 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                 homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
             }
         }
-
     }
 }
 
