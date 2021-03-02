@@ -8,9 +8,12 @@ import androidx.room.Query
 @Dao
 interface AppleDao {
 
-    @Query("SELECT * FROM apple_table WHERE trackName LIKE :search OR genre LIKE :search ORDER BY timeInserted ASC")
+    @Query("SELECT * FROM apple_table WHERE trackName LIKE :search ORDER BY timeInserted ASC")
     fun searchAppleData(search : String) : List<AppleEntity>
 
     @Insert
     suspend fun insertAppleData(apple : AppleEntity)
+
+    @Query("SELECT * FROM apple_table WHERE trackName LIKE :search AND genre LIKE :genreFilter ORDER BY timeInserted ASC ")
+    fun filterWithSearchData(search : String, genreFilter: String) : List<AppleEntity>
 }

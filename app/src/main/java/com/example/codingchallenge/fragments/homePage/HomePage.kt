@@ -2,7 +2,7 @@ package com.example.codingchallenge.fragments.homePage
 
 import android.content.res.Configuration
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,22 +13,25 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.createDataStore
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.codingchallenge.Constants
+import com.example.codingchallenge.Constants.Companion.LATEST_FILTER_KEY
 import com.example.codingchallenge.Constants.Companion.LATEST_SEARCH_VIEW
 import com.example.codingchallenge.R
 import com.example.codingchallenge.databinding.FragmentHomePageBinding
 import com.example.codingchallenge.room.AppleEntity
+import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.OnQueryTextListener {
+class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.OnQueryTextListener, ChipGroup.OnCheckedChangeListener {
 
     private val homePageViewModel: HomePageViewModel by viewModels()
     private lateinit var dataStore: DataStore<Preferences>
@@ -39,6 +42,10 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
     private var updatedList = listOf<AppleEntity>()
     private lateinit var checkUpdatedKey: Preferences.Key<Boolean>
     private lateinit var searchViewKey: Preferences.Key<String>
+    private lateinit var filterViewKey: Preferences.Key<String>
+    private var latestSearch = ""
+    private var latestFilter = -1
+    private lateinit var filterArray : Array<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,12 +65,13 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
     }
 
     private fun initializeChipGroup() {
+        filterArray = resources.getStringArray(R.array.chip_array)
+        binding.homePageChipGroup.setOnCheckedChangeListener(this)
         val chipArray = arrayOf(binding.homePageChipAction, binding.homePageChipComedy, binding.homePageChipDrama, binding.homePageChipKids, binding.homePageChipRomance, binding.homePageChipSciFi)
         val labelArray = resources.getStringArray(R.array.chip_array)
         repeat(chipArray.size){
             chipArray[it].homePageChip.text = labelArray[it]
         }
-
     }
 
     private fun initializeToolbar() {
@@ -95,10 +103,11 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                 dataStore.edit {
                     it[checkUpdatedKey] = true
                 }
-                homePageViewModel.searchAppleList("")
+                homePageViewModel.searchWithFilter("", "")
             }else{
                 preference[searchViewKey]?.let{
-                    homePageViewModel.searchAppleList(it)
+                    homePageViewModel.searchWithFilter(it, "")
+                    latestSearch = it
                 }
             }
         }
@@ -108,6 +117,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         dataStore = requireContext().createDataStore(Constants.DATA_STORE)
         checkUpdatedKey = booleanPreferencesKey(Constants.CHECK_UPDATED_KEY)
         searchViewKey = stringPreferencesKey(LATEST_SEARCH_VIEW)
+        filterViewKey = stringPreferencesKey(LATEST_FILTER_KEY)
     }
 
 
@@ -128,8 +138,9 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
 
     override fun onQueryTextChange(query: String?): Boolean {
         query?.let {
-            homePageViewModel.searchAppleList(it)
             lifecycleScope.launch(IO) {
+                homePageViewModel.searchWithFilter(it, filterArray[latestFilter])
+                latestSearch = it
                 dataStore.edit { preference ->
                     preference[searchViewKey] = query
                 }
@@ -138,4 +149,46 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
         return false
     }
+
+    override fun onCheckedChanged(group: ChipGroup?, checkedId: Int) {
+        val filterArray = resources.getStringArray(R.array.chip_array)
+        latestFilter = when(checkedId){
+            R.id.homePage_chipAction -> 0
+            R.id.homePage_chipComedy -> 1
+            R.id.homePage_chipDrama -> 2
+            R.id.homePage_chipKids -> 3
+            R.id.homePage_chipRomance -> 4
+            R.id.homePage_chipSciFi -> 5
+            else -> -1
+        }
+        lifecycleScope.launch(IO){
+            dataStore.edit{
+                if(latestFilter >= 0){
+                    it[filterViewKey] = filterArray[latestFilter]
+                    homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
+                }else{
+                    it[filterViewKey] = ""
+                    homePageViewModel.searchWithFilter(latestSearch, "")
+                }
+                Log.i(TAG, "onCheckedChanged: ${it[filterViewKey]}")
+
+            }
+        }
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

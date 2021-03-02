@@ -24,24 +24,12 @@ class HomePageViewModel @Inject constructor(
     private val _dataList = MutableLiveData<List<AppleEntity>>()
     var dataList: LiveData<List<AppleEntity>> = _dataList
 
-    fun searchAppleList(search: String?) {
-        search?.let{
-            val query = "%$it%"
-            viewModelScope.launch(IO) {
-                val appleData = appleRepository.searchAppleData(query)
-                withContext(Main) {
-                    _dataList.value = appleData
-                }
-            }
-        }
-    }
-
     suspend fun retrieveAllAppleData() {
         val appleList = appleApi.getAppleData()
         if (appleList.isSuccessful) {
             val numberOfData = appleList.body()?.resultCount
-            numberOfData?.let{ totalNumber ->
-                repeat(totalNumber){
+            numberOfData?.let { totalNumber ->
+                repeat(totalNumber) {
                     val appleData = appleList.body()?.results?.get(it)
                     val importantData = retrieveImportantData(appleData)
                     insertAppleData(importantData)
@@ -51,18 +39,36 @@ class HomePageViewModel @Inject constructor(
     }
 
     private fun retrieveImportantData(appleData: AppleResult?): AppleEntity? {
-        appleData?.let{
-            return  AppleEntity(appleData.trackName, appleData.artworkUrl100, appleData.trackPrice, appleData.trackRentalPrice, appleData.releaseDate, appleData.primaryGenreName, appleData.longDescription, appleData.trackTimeMillis)
+        appleData?.let {
+            return AppleEntity(
+                appleData.trackName,
+                appleData.artworkUrl100,
+                appleData.trackPrice,
+                appleData.trackRentalPrice,
+                appleData.releaseDate,
+                appleData.primaryGenreName,
+                appleData.longDescription,
+                appleData.trackTimeMillis
+            )
         }
         return null
     }
 
     private suspend fun insertAppleData(appleEntity: AppleEntity?) {
-        appleEntity?.let{
+        appleEntity?.let {
             appleRepository.insertAppleData(it)
         }
     }
 
+
+    suspend fun searchWithFilter(search: String, genreFilter: String) {
+        val filterQuery = "%$genreFilter%"
+        val searchQuery = "%$search%"
+        val filteredList = appleRepository.filterWithSearchData(searchQuery, filterQuery)
+        withContext(Main) {
+            _dataList.value = filteredList
+        }
+    }
 }
 
 
