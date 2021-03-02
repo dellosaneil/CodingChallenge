@@ -2,35 +2,34 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="8dp"
-    app:cardElevation="6dp"
     android:id="@+id/homePageRV_container"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:padding="4dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="4dp">
 
         <ImageView
             android:id="@+id/homePageRV_image"
-            android:backgroundTint="#00000000"
             android:layout_width="110dp"
-            tools:src="@drawable/ic_place_holder_100"
             android:layout_height="160dp"
+            android:contentDescription="@string/homePageImageDescription"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/homePageImageDescription"/>
+            tools:src="@drawable/ic_place_holder_100" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/homePageRV_title"
             android:layout_width="0dp"
-            android:textStyle="bold"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="12sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/homePageRV_image"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/homePageRV_image"
@@ -56,9 +55,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/homePageRV_image"
             app:layout_constraintHorizontal_bias="0.0"
-            tools:text="Sci-Fi &amp; Fantasy"
             app:layout_constraintStart_toStartOf="@+id/homePageRV_image"
-            app:layout_constraintTop_toBottomOf="@+id/homePageRV_price" />
+            app:layout_constraintTop_toBottomOf="@+id/homePageRV_price"
+            tools:text="Sci-Fi &amp; Fantasy" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

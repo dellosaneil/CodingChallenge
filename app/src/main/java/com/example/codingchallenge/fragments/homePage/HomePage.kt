@@ -2,7 +2,6 @@ package com.example.codingchallenge.fragments.homePage
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,6 +84,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         val search = binding.homePageToolbar.menu?.findItem(R.id.homeMenu_search)
         val searchView = search?.actionView as SearchView
         searchView.apply {
+            setIconifiedByDefault(false)
             setQuery(latestSearch, true)
         }
         searchView.setOnQueryTextListener(this)

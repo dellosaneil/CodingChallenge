@@ -9,10 +9,8 @@ import com.bumptech.glide.Glide
 import com.example.codingchallenge.R
 import com.example.codingchallenge.databinding.ListItemHomepageBinding
 import com.example.codingchallenge.room.AppleEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 
-class HomePageAdapter(private val homePageListener : HomePageAdapter.HomePageClickListener) : RecyclerView.Adapter<HomePageAdapter.HomePageViewHolder>() {
+class HomePageAdapter(private val homePageListener : HomePageClickListener) : RecyclerView.Adapter<HomePageAdapter.HomePageViewHolder>() {
 
     private var movieData = listOf<AppleEntity>()
 

@@ -1,7 +1,6 @@
 package com.example.codingchallenge.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +74,6 @@ class DetailsPage : Fragment() {
             removeDataStorePreference()
             Navigation.findNavController(view).navigateUp()
         }
-
     }
 
     private fun displayMovieInformation(view: View) {
