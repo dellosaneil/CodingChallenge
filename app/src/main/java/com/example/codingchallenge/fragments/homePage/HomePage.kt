@@ -1,5 +1,6 @@
 package com.example.codingchallenge.fragments.homePage
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -25,13 +26,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomePage : Fragment() {
+class HomePage : Fragment(), HomePageAdapter.HomePageClickListener {
 
     private val homePageViewModel : HomePageViewModel by viewModels()
     private lateinit var dataStore : DataStore<Preferences>
     private var _binding: FragmentHomePageBinding? = null
     private val binding get() = _binding!!
-    private val homePageAdapter : HomePageAdapter by lazy { HomePageAdapter() }
+    private val homePageAdapter : HomePageAdapter by lazy { HomePageAdapter(this) }
     private val TAG = "HomePage"
 
     override fun onCreateView(
@@ -52,25 +53,26 @@ class HomePage : Fragment() {
     private fun setUpRecyclerView() {
         binding.homePageRecyclerView.apply{
             adapter = homePageAdapter
-            layoutManager = GridLayoutManager(requireActivity(), 2)
+            val spanCount = if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
+            layoutManager = GridLayoutManager(requireActivity(), spanCount)
         }
-        homePageViewModel.dataList.observe(viewLifecycleOwner){
-            homePageAdapter.insertMovieData(it)
+        homePageViewModel.dataList.observe(viewLifecycleOwner){ outer ->
+            outer?.let{
+                homePageAdapter.insertMovieData(it)
+            }
         }
-
-
     }
-
 
     private fun checkDataForUpdate() {
         val dataStoreKey = booleanPreferencesKey(Constants.CHECK_UPDATED_KEY)
         lifecycleScope.launch(Dispatchers.IO) {
             val preference = dataStore.data.first()
-            if(preference[dataStoreKey] == null || preference[dataStoreKey] == false){
+            if(preference[dataStoreKey] == null || preference[dataStoreKey] == false) {
                 homePageViewModel.retrieveAllAppleData()
                 dataStore.edit {
                     it[dataStoreKey] = true
                 }
+                homePageViewModel.searchAppleList("")
             }
         }
     }
@@ -83,6 +85,10 @@ class HomePage : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun pageClicked(position: Int) {
+        Log.i(TAG, "pageClicked: $position")
     }
 
 

@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [AppleEntity::class], version = 2)
+@Database(entities = [AppleEntity::class], version = 6)
 abstract class AppleDatabase: RoomDatabase() {
     abstract fun appleDao() : AppleDao
 }

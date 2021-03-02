@@ -1,8 +1,12 @@
 package com.example.codingchallenge.room
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "apple_table")
 data class AppleEntity(
     val trackName : String,
@@ -10,8 +14,10 @@ data class AppleEntity(
     val price : Double,
     val genre : String,
     val description : String,
+    val duration : Int,
     val timeInserted : Long = System.currentTimeMillis()
-) {
+) : Parcelable {
+    @IgnoredOnParcel
     @PrimaryKey(autoGenerate = true)
     var id : Int = 0
 }

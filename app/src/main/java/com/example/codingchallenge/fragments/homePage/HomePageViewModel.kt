@@ -25,19 +25,17 @@ class HomePageViewModel @Inject constructor(
     var dataList: LiveData<List<AppleEntity>> = _dataList
 
     init {
-        viewModelScope.launch(IO) {
-            val appleData = appleRepository.retrieveAllData()
-            withContext(Main) {
-                _dataList.value = appleData
-            }
-        }
+        searchAppleList("")
     }
 
-    fun searchAppleList(search: String) {
-        viewModelScope.launch(IO) {
-            val appleData = appleRepository.searchAppleData(search)
-            withContext(Main) {
-                _dataList.value = appleData
+    fun searchAppleList(search: String?) {
+        search?.let{
+            val query = "%$it%"
+            viewModelScope.launch(IO) {
+                val appleData = appleRepository.searchAppleData(query)
+                withContext(Main) {
+                    _dataList.value = appleData
+                }
             }
         }
     }
@@ -58,7 +56,7 @@ class HomePageViewModel @Inject constructor(
 
     private fun retrieveImportantData(appleData: AppleResult?): AppleEntity? {
         appleData?.let{
-            return  AppleEntity(appleData.trackName, appleData.artworkUrl100, appleData.trackPrice, appleData.primaryGenreName, appleData.longDescription)
+            return  AppleEntity(appleData.trackName, appleData.artworkUrl100, appleData.trackPrice, appleData.primaryGenreName, appleData.longDescription, appleData.trackTimeMillis)
         }
         return null
     }

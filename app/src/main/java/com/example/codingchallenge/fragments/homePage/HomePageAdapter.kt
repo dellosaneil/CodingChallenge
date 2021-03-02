@@ -9,12 +9,14 @@ import com.bumptech.glide.Glide
 import com.example.codingchallenge.R
 import com.example.codingchallenge.databinding.ListItemHomepageBinding
 import com.example.codingchallenge.room.AppleEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 
-class HomePageAdapter : RecyclerView.Adapter<HomePageAdapter.HomePageViewHolder>() {
+class HomePageAdapter(private val homePageListener : HomePageAdapter.HomePageClickListener) : RecyclerView.Adapter<HomePageAdapter.HomePageViewHolder>() {
 
     private var movieData = listOf<AppleEntity>()
 
-    fun insertMovieData(newMovies : List<AppleEntity>){
+    fun insertMovieData(newMovies: List<AppleEntity>) {
         val oldMovies = movieData
         val diffResult = DiffUtil.calculateDiff(
             HomePageDiffUtil(oldMovies, newMovies)
@@ -37,28 +39,57 @@ class HomePageAdapter : RecyclerView.Adapter<HomePageAdapter.HomePageViewHolder>
 
     override fun getItemCount() = movieData.size
 
-    private class HomePageDiffUtil(private val oldList : List<AppleEntity>, private val newList : List<AppleEntity>) : DiffUtil.Callback(){
+    private class HomePageDiffUtil(
+        private val oldList: List<AppleEntity>,
+        private val newList: List<AppleEntity>
+    ) : DiffUtil.Callback() {
         override fun getOldListSize() = oldList.size
 
         override fun getNewListSize() = newList.size
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) = oldList[oldItemPosition].timeInserted == newList[newItemPosition].timeInserted
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+            oldList[oldItemPosition].timeInserted == newList[newItemPosition].timeInserted
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) = oldList[oldItemPosition] == newList[newItemPosition]
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+            oldList[oldItemPosition] == newList[newItemPosition]
     }
 
 
+    inner class HomePageViewHolder(private val binding: ListItemHomepageBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-    class HomePageViewHolder(private val binding : ListItemHomepageBinding) : RecyclerView.ViewHolder(binding.root) {
+        init{
+            binding.homePageRVContainer.setOnClickListener(this)
+        }
 
-        fun bind(appleData : AppleEntity){
+        fun bind(appleData: AppleEntity) {
             binding.homePageRVGenre.text = appleData.genre
-            binding.homePageRVPrice.text = binding.root.resources.getString(R.string.homePageAdapter_price, appleData.price.toString())
-            binding.homePageRVRatings.text = "3.7"
+            binding.homePageRVPrice.text = binding.root.resources.getString(
+                R.string.homePageAdapter_price,
+                appleData.price.toString()
+            )
             binding.homePageRVTitle.text = appleData.trackName
             Glide.with(binding.root.context)
                 .load(appleData.artWork)
                 .into(binding.homePageRVImage)
         }
+
+        override fun onClick(v: View?) {
+            homePageListener.pageClicked(adapterPosition)
+        }
+    }
+
+    interface HomePageClickListener{
+        fun pageClicked(position : Int)
     }
 }
+
+
+
+
+
+
+
+
+
+
