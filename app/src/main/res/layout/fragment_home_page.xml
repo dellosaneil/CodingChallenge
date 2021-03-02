@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.homePage.HomePage">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/homePage_toolbar"
+        android:layout_width="match_parent"
+        app:menu="@menu/home_menu"
+        android:layout_height="?attr/actionBarSize" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homePage_recyclerView"
@@ -11,4 +19,4 @@
         tools:listitem="@layout/list_item_homepage"
         android:layout_height="match_parent"/>
 
-</FrameLayout>
+</LinearLayout>

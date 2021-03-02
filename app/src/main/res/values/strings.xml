@@ -16,4 +16,6 @@
     <string name="detailsPage_buy">Buy $%1$s</string>
     <string name="detailsPage_toolbar">Last Visited : %1$s</string>
 
+    <string name="homePage_searchTitle">Search</string>
+
 </resources>

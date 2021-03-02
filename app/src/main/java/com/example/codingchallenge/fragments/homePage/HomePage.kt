@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomePage : Fragment(), HomePageAdapter.HomePageClickListener {
+class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.OnQueryTextListener {
 
     private val homePageViewModel : HomePageViewModel by viewModels()
     private lateinit var dataStore : DataStore<Preferences>
@@ -50,6 +51,13 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener {
         initializeDataStore()
         checkDataForUpdate()
         setUpRecyclerView()
+        initializeToolbar()
+    }
+
+    private fun initializeToolbar() {
+        val search = binding.homePageToolbar.menu?.findItem(R.id.homeMenu_search)
+        val searchView = search?.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
     }
 
     private fun setUpRecyclerView() {
@@ -94,5 +102,17 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener {
         val movieDetails = updatedList[position]
         val action = HomePageDirections.homePageDetailsPage(movieDetails)
         Navigation.findNavController(requireView()).navigate(action)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        query?.let{
+            homePageViewModel.searchAppleList(it)
+            return true
+        }
+        return false
     }
 }

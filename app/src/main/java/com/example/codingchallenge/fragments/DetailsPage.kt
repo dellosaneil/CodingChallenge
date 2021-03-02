@@ -37,12 +37,6 @@ class DetailsPage : Fragment() {
         binding.detailsPageToolbar.setOnClickListener {
             Navigation.findNavController(view).navigateUp()
         }
-        binding.detailsPageToolbar.title = getString(R.string.detailsPage_toolbar,convertMilliToDate(System.currentTimeMillis()))
-    }
-
-    private fun convertMilliToDate(currentTimeMillis: Long): CharSequence? {
-        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ROOT)
-        return  simpleDateFormat.format(currentTimeMillis)
     }
 
     private fun displayMovieInformation(view: View) {
