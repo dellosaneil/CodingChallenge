@@ -66,7 +66,7 @@ class HomePageAdapter(private val homePageListener : HomePageAdapter.HomePageCli
             binding.homePageRVGenre.text = appleData.genre
             binding.homePageRVPrice.text = binding.root.resources.getString(
                 R.string.homePageAdapter_price,
-                appleData.price.toString()
+                appleData.buyPrice.toString()
             )
             binding.homePageRVTitle.text = appleData.trackName
             Glide.with(binding.root.context)

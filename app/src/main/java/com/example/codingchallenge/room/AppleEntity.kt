@@ -11,7 +11,9 @@ import kotlinx.parcelize.Parcelize
 data class AppleEntity(
     val trackName : String,
     val artWork : String? = null,
-    val price : Double,
+    val buyPrice : Double,
+    val rentPrice : Double,
+    val releaseDate : String,
     val genre : String,
     val description : String,
     val duration : Int,

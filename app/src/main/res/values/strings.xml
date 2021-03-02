@@ -9,4 +9,11 @@
     <string name="homePageImageDescription">artwork image</string>
 
     <string name="detailsPage_description">About this movie</string>
+    <string name="detailsPage_genre"><b>%1$s</b>\nGenre</string>
+    <string name="detailsPage_duration"><b>%1$s</b>\nDuration</string>
+    <string name="detailsPage_released">Date Released: <b>%1$s</b></string>
+    <string name="detailsPage_rent">Rent $%1$s</string>
+    <string name="detailsPage_buy">Buy $%1$s</string>
+    <string name="detailsPage_toolbar">Last Visited : %1$s</string>
+
 </resources>

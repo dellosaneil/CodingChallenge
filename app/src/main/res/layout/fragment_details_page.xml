@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".fragments.DetailsPage">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/detailsPage_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/detailsPage_image"
         android:layout_width="130dp"
@@ -13,7 +22,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsPage_toolbar"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_place_holder_100" />
 
@@ -21,7 +30,7 @@
         android:id="@+id/detailsPage_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="8dp"
         android:textSize="18sp"
         tools:text="Roald Dahl's The Witches"
         android:textStyle="bold"
@@ -68,7 +77,38 @@
 
     </LinearLayout>
 
-    <com.google.android.material.textview.MaterialTextView
+    <LinearLayout
+        android:id="@+id/detailsPage_buttons"
+        android:layout_width="0dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        android:weightSum="2"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/detailsPage_rent"
+            android:layout_width="0dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="0dp"
+            android:id="@+id/detailsPage_buy"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+
+        <com.google.android.material.textview.MaterialTextView
         android:layout_width="0dp"
         android:id="@+id/detailsPage_aboutMovie"
         android:layout_height="wrap_content"
@@ -76,8 +116,8 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:text="@string/detailsPage_description"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintStart_toStartOf="@+id/detailsPage_buttons"
+        app:layout_constraintTop_toBottomOf="@+id/detailsPage_buttons" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/detailsPage_description"

@@ -56,12 +56,10 @@ class HomePageViewModel @Inject constructor(
 
     private fun retrieveImportantData(appleData: AppleResult?): AppleEntity? {
         appleData?.let{
-            return  AppleEntity(appleData.trackName, appleData.artworkUrl100, appleData.trackPrice, appleData.primaryGenreName, appleData.longDescription, appleData.trackTimeMillis)
+            return  AppleEntity(appleData.trackName, appleData.artworkUrl100, appleData.trackPrice, appleData.trackRentalPrice, appleData.releaseDate, appleData.primaryGenreName, appleData.longDescription, appleData.trackTimeMillis)
         }
         return null
     }
-
-
 
     private suspend fun insertAppleData(appleEntity: AppleEntity?) {
         appleEntity?.let{
