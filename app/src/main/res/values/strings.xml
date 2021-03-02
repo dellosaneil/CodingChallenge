@@ -17,5 +17,6 @@
     <string name="detailsPage_toolbar">Last Visited : %1$s</string>
 
     <string name="homePage_searchTitle">Search</string>
+    <string name="homePage_searchHint">Search for titles…</string>
 
 </resources>

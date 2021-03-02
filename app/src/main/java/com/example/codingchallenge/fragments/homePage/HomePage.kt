@@ -85,6 +85,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         val searchView = search?.actionView as SearchView
         searchView.apply {
             setIconifiedByDefault(false)
+            queryHint = getText(R.string.homePage_searchHint)
             setQuery(latestSearch, true)
         }
         searchView.setOnQueryTextListener(this)
