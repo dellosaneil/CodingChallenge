@@ -7,4 +7,6 @@
     <string name="homePageAdapter_price">$%1$s</string>
 
     <string name="homePageImageDescription">artwork image</string>
+
+    <string name="detailsPage_description">About this movie</string>
 </resources>

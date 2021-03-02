@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsPage"
-        android:name="com.example.codingchallenge.fragments.detailsPage.DetailsPage"
+        android:name="com.example.codingchallenge.fragments.DetailsPage"
         android:label="fragment_details_page"
         tools:layout="@layout/fragment_details_page" >
         <argument
