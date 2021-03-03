@@ -45,7 +45,8 @@ class HomePageViewModel @Inject constructor(
                 appleData.releaseDate,
                 appleData.primaryGenreName,
                 appleData.longDescription,
-                appleData.trackTimeMillis
+                appleData.trackTimeMillis,
+                appleData.contentAdvisoryRating
             )
         }
         return null

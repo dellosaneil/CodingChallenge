@@ -1,7 +1,11 @@
 package com.example.codingchallenge.fragments.homePage
 
+import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,9 +26,11 @@ import com.example.codingchallenge.R
 import com.example.codingchallenge.databinding.FragmentHomePageBinding
 import com.example.codingchallenge.room.AppleEntity
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,7 +50,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
     private lateinit var filterViewKey: Preferences.Key<String>
     private lateinit var latestMovieKey: Preferences.Key<Int>
     private var latestSearch = ""
-    private var latestFilter = -1
+    private var latestFilter = 0
     private lateinit var filterArray: Array<String>
 
     override fun onCreateView(
@@ -57,6 +63,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        homePageViewModel
         initializeDataStore()
         checkSavedPreferences()
         setUpRecyclerView()
@@ -106,16 +113,23 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
+    private val TAG = "HomePage"
+
     private fun checkSavedPreferences() {
         lifecycleScope.launch(IO) {
+
             val preference = dataStore.data.first()
             if (preference[checkUpdatedKey] == null || preference[checkUpdatedKey] == false) {
-                homePageViewModel.retrieveAllAppleData()
-                dataStore.edit {
-                    it[checkUpdatedKey] = true
-                    it[latestMovieKey] = -1
+                if (hasNetworkAvailable()) {
+                    homePageViewModel.retrieveAllAppleData()
+                    dataStore.edit {
+                        it[checkUpdatedKey] = true
+                        it[latestMovieKey] = -1
+                    }
+                    homePageViewModel.searchWithFilter("", "")
+                } else {
+                    internetCheckSnackBar()
                 }
-                homePageViewModel.searchWithFilter("", "")
             } else {
                 preference[searchViewKey]?.let {
                     latestSearch = it
@@ -129,6 +143,27 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
+    private fun internetCheckSnackBar() {
+        Snackbar.make(
+            requireView(),
+            getString(R.string.homePage_snackBarTitle),
+            Snackbar.LENGTH_LONG
+        ).apply {
+            setAction(getString(R.string.homePage_snackBarAction)) {
+                checkSavedPreferences()
+            }
+            show()
+        }
+    }
+
+
+    private fun hasNetworkAvailable(): Boolean {
+        val service = Context.CONNECTIVITY_SERVICE
+        val manager = context?.getSystemService(service) as ConnectivityManager?
+        val network = manager?.activeNetworkInfo
+        return (network != null)
+    }
+
 
     private suspend fun redirectToPreviousMovie(indexNumber: Int) {
         withContext(Main) {
@@ -136,7 +171,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                 val movieDetails = updatedList[indexNumber]
                 val action = HomePageDirections.homePageDetailsPage(movieDetails)
                 Navigation.findNavController(requireView()).navigate(action)
-            }else{
+            } else {
                 withContext(Main) {
                     initializeToolbar()
                     checkChipButton()

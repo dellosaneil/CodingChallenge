@@ -15,8 +15,11 @@
     <string name="detailsPage_rent">Rent $%1$s</string>
     <string name="detailsPage_buy">Buy $%1$s</string>
     <string name="detailsPage_toolbar">Last Visited : %1$s</string>
+    <string name="detailsPage_advisory">%1$s\nAdvisory Rating</string>
 
     <string name="homePage_searchTitle">Search</string>
     <string name="homePage_searchHint">Search for titles…</string>
+    <string name="homePage_snackBarTitle">Internet connection required</string>
+    <string name="homePage_snackBarAction">Retry</string>
 
 </resources>

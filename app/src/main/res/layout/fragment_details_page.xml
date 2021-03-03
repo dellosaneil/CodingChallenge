@@ -36,9 +36,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:fontFamily="@font/roboto_bold"
             android:includeFontPadding="false"
             android:textSize="18sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detailsPage_image"
             app:layout_constraintTop_toTopOf="@+id/detailsPage_image"
             tools:text="Roald Dahl's The Witches" />
@@ -48,6 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto"
             app:layout_constraintEnd_toEndOf="@+id/detailsPage_title"
             app:layout_constraintStart_toStartOf="@+id/detailsPage_title"
             app:layout_constraintTop_toBottomOf="@+id/detailsPage_title"
@@ -70,6 +73,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/roboto"
                 android:textAlignment="center"
                 tools:text="Sci-Fi &amp; Fantasy\nGenre" />
 
@@ -83,8 +87,25 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/roboto"
                 android:textAlignment="center"
                 tools:text="1hr 44min\nDuration" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#808080"/>
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/detailsPage_rating"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto"
+                android:textAlignment="center"
+                tools:text="PG\nAdvisory Rating" />
+
 
         </LinearLayout>
 
@@ -104,14 +125,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_medium" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/detailsPage_buy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_medium" />
 
 
         </LinearLayout>
@@ -122,6 +145,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/detailsPage_description"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -133,6 +157,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto"
             android:justificationMode="inter_word"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/linearLayout"

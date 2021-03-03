@@ -89,16 +89,14 @@ class DetailsPage : Fragment() {
             getString(R.string.detailsPage_duration, convertTime(details?.duration))
         binding.detailsPageGenre.text = getString(R.string.detailsPage_genre, details?.genre)
         binding.detailsPageTitle.text = details?.trackName
-        binding.detailsPageReleased.text = getString(
-            R.string.detailsPage_released, details?.releaseDate?.substring(
-                0,
-                10
-            )
-        )
+        binding.detailsPageReleased.text = getString(R.string.detailsPage_released, details?.releaseDate?.substring(0, 10))
+        binding.detailsPageRating.text = getString(R.string.detailsPage_advisory, details?.advisoryRating)
         Glide.with(view)
             .load(details?.artWork)
             .placeholder(R.drawable.ic_place_holder_100)
             .into(binding.detailsPageImage)
+
+
     }
 
     private fun convertTime(time: Int?): String {

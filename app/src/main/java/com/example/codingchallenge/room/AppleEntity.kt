@@ -17,6 +17,7 @@ data class AppleEntity(
     val genre : String,
     val description : String,
     val duration : Int,
+    val advisoryRating : String,
     val timeInserted : Long = System.currentTimeMillis()
 ) : Parcelable {
     @IgnoredOnParcel
