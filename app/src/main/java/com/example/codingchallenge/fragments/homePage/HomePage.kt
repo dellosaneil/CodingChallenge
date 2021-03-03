@@ -84,6 +84,8 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
+    /* Stops the Shimmer Animation, and hides the Shimmer Layout.
+    * Shows RecyclerView*/
     private suspend fun hideShimmerShowRecyclerView(){
         withContext(Main) {
             binding.homePageShimmer.apply {
