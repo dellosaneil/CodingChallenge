@@ -1,6 +1,10 @@
 package com.example.codingchallenge.fragments
 
 import android.os.Bundle
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
+import android.text.Html.fromHtml
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,6 +91,7 @@ class DetailsPage : Fragment() {
         binding.detailsPageDescription.text = details?.description
         binding.detailsPageDuration.text =
             getString(R.string.detailsPage_duration, convertTime(details?.duration))
+
         binding.detailsPageGenre.text = getString(R.string.detailsPage_genre, details?.genre)
         binding.detailsPageTitle.text = details?.trackName
         binding.detailsPageReleased.text = getString(R.string.detailsPage_released, details?.releaseDate?.substring(0, 10))
@@ -95,9 +100,9 @@ class DetailsPage : Fragment() {
             .load(details?.artWork)
             .placeholder(R.drawable.ic_place_holder_100)
             .into(binding.detailsPageImage)
-
-
     }
+
+
 
     private fun convertTime(time: Int?): String {
         time?.let {

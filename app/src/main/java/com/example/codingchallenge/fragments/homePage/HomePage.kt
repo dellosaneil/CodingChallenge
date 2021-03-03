@@ -113,8 +113,6 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
-    private val TAG = "HomePage"
-
     private fun checkSavedPreferences() {
         lifecycleScope.launch(IO) {
 
