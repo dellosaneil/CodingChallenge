@@ -21,6 +21,8 @@ class HomePageViewModel @Inject constructor(
     private val _dataList = MutableLiveData<List<AppleEntity>>()
     var dataList: LiveData<List<AppleEntity>> = _dataList
 
+    /*Only called when the device does not have the data yet.
+    * Requires Internet connection which is checked in the Fragment.*/
     suspend fun retrieveAllAppleData() {
         val appleList = appleApi.getAppleData()
         if (appleList.isSuccessful) {
@@ -35,6 +37,8 @@ class HomePageViewModel @Inject constructor(
         }
     }
 
+
+    /* Filters the entire Result from the API into a dataclass that is useful for the application.*/
     private fun retrieveImportantData(appleData: AppleResult?): AppleEntity? {
         appleData?.let {
             return AppleEntity(
@@ -52,13 +56,16 @@ class HomePageViewModel @Inject constructor(
         return null
     }
 
+
+    /*Called to insert a new Data for Room.*/
     private suspend fun insertAppleData(appleEntity: AppleEntity?) {
         appleEntity?.let {
             appleRepository.insertAppleData(it)
         }
     }
 
-
+    /*Updates the list if a new query has been made.
+    * Updates the _dataList values.*/
     suspend fun searchWithFilter(search: String, genreFilter: String) {
         val filterQuery = "%$genreFilter%"
         val searchQuery = "%$search%"

@@ -7,6 +7,11 @@ import retrofit2.http.Query
 
 interface AppleApi {
 
+
+    /*
+    * Interface to use for the Retrofit instance. Used in retrieving JSON from API
+    * Can be used to query other API if wanted.*/
+
     @GET("search")
     suspend fun getAppleData(
         @Query("term")

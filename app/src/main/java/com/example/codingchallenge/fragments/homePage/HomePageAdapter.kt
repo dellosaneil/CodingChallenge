@@ -14,6 +14,8 @@ class HomePageAdapter(private val homePageListener : HomePageClickListener) : Re
 
     private var movieData = listOf<AppleEntity>()
 
+
+    /*Updates the recyclerview to the latest query using DiffUtil */
     fun insertMovieData(newMovies: List<AppleEntity>) {
         val oldMovies = movieData
         val diffResult = DiffUtil.calculateDiff(
@@ -37,17 +39,16 @@ class HomePageAdapter(private val homePageListener : HomePageClickListener) : Re
 
     override fun getItemCount() = movieData.size
 
+
+    /*A DiffUtil callback to optimize the updates of the recyclerview values.*/
     private class HomePageDiffUtil(
         private val oldList: List<AppleEntity>,
         private val newList: List<AppleEntity>
     ) : DiffUtil.Callback() {
         override fun getOldListSize() = oldList.size
-
         override fun getNewListSize() = newList.size
-
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
             oldList[oldItemPosition].timeInserted == newList[newItemPosition].timeInserted
-
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
             oldList[oldItemPosition] == newList[newItemPosition]
     }
@@ -60,6 +61,8 @@ class HomePageAdapter(private val homePageListener : HomePageClickListener) : Re
             binding.homePageRVContainer.setOnClickListener(this)
         }
 
+
+        /* A function to get the individual data to display in the recycler view*/
         fun bind(appleData: AppleEntity) {
             binding.homePageRVGenre.text = appleData.genre
             binding.homePageRVPrice.text = binding.root.resources.getString(
@@ -69,9 +72,12 @@ class HomePageAdapter(private val homePageListener : HomePageClickListener) : Re
             binding.homePageRVTitle.text = appleData.trackName
             Glide.with(binding.root.context)
                 .load(appleData.artWork)
+                .placeholder(R.drawable.ic_place_holder_100)
                 .into(binding.homePageRVImage)
         }
 
+
+        /*Listens to click events, connected to HomePage fragment.*/
         override fun onClick(v: View?) {
             homePageListener.pageClicked(adapterPosition)
         }

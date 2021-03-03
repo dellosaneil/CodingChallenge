@@ -3,9 +3,7 @@ package com.example.codingchallenge.fragments.homePage
 import android.content.Context
 import android.content.res.Configuration
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +28,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -70,7 +67,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         initializeChipGroup()
     }
 
-
+    /*Places the labels on the Chips in the ChipGroup*/
     private fun initializeChipGroup() {
         binding.homePageChipGroup.setOnCheckedChangeListener(this)
         val chipArray = arrayOf(
@@ -87,9 +84,11 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
-    private fun initializeToolbar() {
-        val search = binding.homePageToolbar.menu?.findItem(R.id.homeMenu_search)
-        val searchView = search?.actionView as SearchView
+    /*Allows the searchView in the Toolbar to listen to real time query.
+    * Put value on the Search View Query if the user previously wrote a query before closing the application*/
+    private fun initializeSearchView() {
+        val searchMenu = binding.homePageToolbar.menu?.findItem(R.id.homeMenu_search)
+        val searchView = searchMenu?.actionView as SearchView
         searchView.apply {
             setIconifiedByDefault(false)
             queryHint = getText(R.string.homePage_searchHint)
@@ -98,6 +97,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         searchView.setOnQueryTextListener(this)
     }
 
+    /* Set up the recyclerview, so that it would be ready to display data in a grid.*/
     private fun setUpRecyclerView() {
         binding.homePageRecyclerView.apply {
             adapter = homePageAdapter
@@ -113,34 +113,51 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
+    /*Checks the DataStore preferences stored in the application.*/
     private fun checkSavedPreferences() {
         lifecycleScope.launch(IO) {
-
             val preference = dataStore.data.first()
             if (preference[checkUpdatedKey] == null || preference[checkUpdatedKey] == false) {
                 if (hasNetworkAvailable()) {
-                    homePageViewModel.retrieveAllAppleData()
-                    dataStore.edit {
-                        it[checkUpdatedKey] = true
-                        it[latestMovieKey] = -1
-                    }
-                    homePageViewModel.searchWithFilter("", "")
+                    getDataFromApi()
                 } else {
                     internetCheckSnackBar()
                 }
             } else {
-                preference[searchViewKey]?.let {
-                    latestSearch = it
-                }
-                preference[filterViewKey]?.let {
-                    latestFilter = filterArray.indexOf(it)
-                }
-                homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
-                redirectToPreviousMovie(preference[latestMovieKey]!!)
+                handleReEntry(preference)
             }
         }
     }
 
+    /*This function is called when user already has the data.
+    * It would check all preferences and restore the last state of the application.*/
+
+    private suspend fun handleReEntry(preference: Preferences) {
+        preference[searchViewKey]?.let {
+            latestSearch = it
+        }
+        preference[filterViewKey]?.let {
+            latestFilter = filterArray.indexOf(it)
+        }
+        homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
+        redirectToPreviousMovie(preference[latestMovieKey]!!)
+    }
+
+
+    /* Only called once when RoomData base is empty.
+    * Checked using DataStore Preference.
+    * Updates 'checkUpdatedKey' to true in order to stop calling this function in the future*/
+    private suspend fun getDataFromApi() {
+        homePageViewModel.retrieveAllAppleData()
+        dataStore.edit {
+            it[checkUpdatedKey] = true
+            it[latestMovieKey] = -1
+        }
+        homePageViewModel.searchWithFilter("", "")
+    }
+
+    /*Only called when the user has no RoomData and has no internet connection.
+    * Added an action to retry when the user has internet.*/
     private fun internetCheckSnackBar() {
         Snackbar.make(
             requireView(),
@@ -154,7 +171,9 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
-
+    /*A simple function to check if the device is connected to the internet.
+    * Would only be called when the user newly installed the application and does not have the movie data.*/
+    @Suppress("DEPRECATION")
     private fun hasNetworkAvailable(): Boolean {
         val service = Context.CONNECTIVITY_SERVICE
         val manager = context?.getSystemService(service) as ConnectivityManager?
@@ -162,7 +181,8 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         return (network != null)
     }
 
-
+    /*Redirects the user to the Details Page whenever the DataStoreKey('latestMovieKey') is not -1.
+    * Uses Navigation component to redirect to the Details Page.*/
     private suspend fun redirectToPreviousMovie(indexNumber: Int) {
         withContext(Main) {
             if (indexNumber != -1) {
@@ -170,15 +190,13 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                 val action = HomePageDirections.homePageDetailsPage(movieDetails)
                 Navigation.findNavController(requireView()).navigate(action)
             } else {
-                withContext(Main) {
-                    initializeToolbar()
-                    checkChipButton()
-                }
+                initializeSearchView()
+                checkChipButton()
             }
         }
     }
 
-
+    /*Restores the ChipButton state when the user closed the program.*/
     private fun checkChipButton() {
         when (latestFilter) {
             1 -> binding.homePageChipAction.homePageChip.isChecked = true
@@ -190,7 +208,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         }
     }
 
-
+    /*A function to initialize all the variables related to DataStore to be used Globally.*/
     private fun initializeDataStore() {
         filterArray = resources.getStringArray(R.array.chip_array)
         dataStore = requireContext().createDataStore(Constants.DATA_STORE)
@@ -200,12 +218,8 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         latestMovieKey = intPreferencesKey(LATEST_FIELD_KEY)
     }
 
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
+    /*An interface that is attached to the RecyclerView Adapter. It listens to click events in the recycler view then re-direct it to the detail page of the clicked movie.
+    * Updates the 'latestMovieKey' to the current position of the movie.*/
     override fun pageClicked(position: Int) {
         val movieDetails = updatedList[position]
         val action = HomePageDirections.homePageDetailsPage(movieDetails)
@@ -221,6 +235,10 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         return true
     }
 
+    /*Gets called every time the user searches using the Search View.
+    * Searches the database if there is a movie with the same letters on the search view.
+    * Updates the 'searchViewKey' every time the function gets called.
+    * It will be used to restore the state of the application once it gets closed.*/
     override fun onQueryTextChange(query: String?): Boolean {
         query?.let {
             lifecycleScope.launch(IO) {
@@ -235,6 +253,10 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
         return false
     }
 
+
+    /* Listens to the children of the chipGroup when a Chip is clicked.
+    * Searches the database by genre that was clicked.
+    * Updates the 'filterViewKey' in order to restore the state of the application once it gets closed.*/
     override fun onCheckedChanged(group: ChipGroup?, checkedId: Int) {
         val filterArray = resources.getStringArray(R.array.chip_array)
         latestFilter = when (checkedId) {
@@ -252,6 +274,12 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                 homePageViewModel.searchWithFilter(latestSearch, filterArray[latestFilter])
             }
         }
+    }
+
+    /*Removes the reference of the viewBind*/
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

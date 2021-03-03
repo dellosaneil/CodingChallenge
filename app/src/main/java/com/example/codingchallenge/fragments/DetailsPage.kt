@@ -31,7 +31,12 @@ class DetailsPage : Fragment() {
 
     private var _binding: FragmentDetailsPageBinding? = null
     private val binding get() = _binding!!
+
+    /*Retrieves the value passed by the HomePage in a safe way.*/
     private val args: DetailsPageArgs by navArgs()
+
+    /*Create dataStore to be used in the class Globally*/
+
     private lateinit var dataStore : DataStore<Preferences>
 
 
@@ -51,19 +56,25 @@ class DetailsPage : Fragment() {
         handleBackPress()
     }
 
+    /*Creates a callback in order to handle back press event.
+    * Would call RemoveDataStorePreference in order to return to -1*/
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             removeDataStorePreference()
             Navigation.findNavController(requireView()).navigateUp()
         }
     }
-
+    /*attached the callback to the Dispatcher*/
     private fun handleBackPress() {
         requireActivity().onBackPressedDispatcher.addCallback(
             onBackPressedCallback
         )
     }
 
+
+    /*Updates the value of the DataStore to -1.
+    * Integer in DataStore is used to re-direct the application when it was closed.*/
     private fun removeDataStorePreference() {
         val latestMovieClicked = intPreferencesKey(LATEST_FIELD_KEY)
         lifecycleScope.launch(IO) {
@@ -73,6 +84,9 @@ class DetailsPage : Fragment() {
         }
     }
 
+
+    /*Set up the navigation icon in the fragment.
+    * Would listen to clicks so that the fragment can navigate Up*/
     private fun initializeToolbar(view: View) {
         binding.detailsPageToolbar.setOnClickListener {
             removeDataStorePreference()
@@ -80,6 +94,8 @@ class DetailsPage : Fragment() {
         }
     }
 
+    /*Populate the layout with the data that was passed from the HomePage class.
+    * Retrieved by safeArgs.*/
     private fun displayMovieInformation(view: View) {
         val details = args.movieDetails
         binding.detailsPageBuy.text =
@@ -103,7 +119,7 @@ class DetailsPage : Fragment() {
     }
 
 
-
+    /*Converts the number of milliseconds into HH:MM format in order to be readable for humans*/
     private fun convertTime(time: Int?): String {
         time?.let {
             var timeMilli = it
@@ -119,6 +135,8 @@ class DetailsPage : Fragment() {
         return "N/A"
     }
 
+    /*manually removing the onBackPressedCallback when the user pressed the Navigation Icon to go back to the previous Fragment.
+    * Removes the reference to the viewBind.*/
     override fun onDestroyView() {
         super.onDestroyView()
         onBackPressedCallback.isEnabled = false
