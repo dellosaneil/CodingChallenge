@@ -95,6 +95,17 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
             binding.homePageRecyclerView.visibility = View.VISIBLE
         }
     }
+    /* Show and start shimmer animation
+    * Hides RecyclerView*/
+    private suspend fun showShimmerHideRecyclerView(){
+        withContext(Main){
+            binding.homePageShimmer.apply {
+                startShimmerAnimation()
+                visibility = View.VISIBLE
+            }
+            binding.homePageRecyclerView.visibility = View.GONE
+        }
+    }
 
 
     /*Allows the searchView in the Toolbar to listen to real time query.
@@ -128,10 +139,10 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
 
     /*Checks the DataStore preferences stored in the application.*/
     private fun checkSavedPreferences() {
-        binding.homePageShimmer.startShimmerAnimation()
         lifecycleScope.launch(IO) {
             val preference = dataStore.data.first()
             if (preference[checkUpdatedKey] == null || preference[checkUpdatedKey] == false) {
+                showShimmerHideRecyclerView()
                 if (hasNetworkAvailable()) {
                     getDataFromApi()
                     hideShimmerShowRecyclerView()
@@ -139,9 +150,7 @@ class HomePage : Fragment(), HomePageAdapter.HomePageClickListener, SearchView.O
                     internetCheckSnackBar()
                 }
             } else {
-                hideShimmerShowRecyclerView()
                 handleReEntry(preference)
-
             }
         }
     }
