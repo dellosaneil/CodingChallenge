@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/homePageRV_container"
     android:layout_width="wrap_content"
+    android:backgroundTint="@color/colorGrey"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     app:cardElevation="6dp">
@@ -15,6 +16,7 @@
 
         <ImageView
             android:id="@+id/homePageRV_image"
+            android:background="@color/colorGrey"
             android:layout_width="100dp"
             android:layout_height="160dp"
             android:contentDescription="@string/homePageImageDescription"
@@ -27,6 +29,7 @@
             android:id="@+id/homePageRV_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@color/colorGrey"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/roboto_bold"
             android:textSize="12sp"
@@ -43,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:background="@color/colorGrey"
             android:fontFamily="@font/roboto"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/roboto"
+            android:background="@color/colorGrey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

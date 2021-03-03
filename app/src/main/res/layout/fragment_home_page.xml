@@ -14,10 +14,10 @@
         app:menu="@menu/home_menu" />
 
     <com.google.android.material.chip.ChipGroup
-        android:layout_width="match_parent"
         android:id="@+id/homePage_chipGroup"
-        app:singleSelection="true"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:singleSelection="true">
 
         <include
             android:id="@+id/homePage_chipAction"
@@ -42,15 +42,77 @@
         <include
             android:id="@+id/homePage_chipSciFi"
             layout="@layout/item_chip" />
-
-
     </com.google.android.material.chip.ChipGroup>
+
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/homePage_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="3"
+            android:rowCount="2"
+            android:stretchMode="spacingWidthUniform"
+            android:useDefaultMargins="true">
+
+            <include
+                layout="@layout/layout_shimmer_home_page"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1" />
+
+            <include
+                layout="@layout/layout_shimmer_home_page"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1" />
+
+            <include
+                layout="@layout/layout_shimmer_home_page"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1" />
+
+            <include
+                layout="@layout/layout_shimmer_home_page"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1" />
+
+            <include
+                layout="@layout/layout_shimmer_home_page"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1" />
+
+            <include
+                layout="@layout/layout_shimmer_home_page"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1" />
+
+
+        </GridLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homePage_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         tools:listitem="@layout/list_item_homepage" />
 
 </LinearLayout>
